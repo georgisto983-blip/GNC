@@ -1,8 +1,30 @@
 from uncertainties import ufloat
+import os
+import json
+
 class Validator:
 
     @staticmethod
-    def validate_yes_no(input_str):
+    def validate_hand_or_file():
+        file_data = None
+        if os.path.exists('input_data/GNC_input.json'):
+            with open('input_data/GNC_input.json', 'r') as f:
+                file_data = json.load(f)
+        return file_data 
+ 
+        # while True:
+        #     hand_or_file = input("Do you want input a commad file? (y/n): ")
+        #     if hand_or_file.lower() in ['y', 'n']:
+        #         break
+        #     else:
+        #         print("Invalid input. Please enter 'y' or 'n'.")
+        #         continue
+        # return hand_or_file    
+
+    @staticmethod
+    def validate_yes_no(hand_or_file):
+        if hand_or_file == 'y':
+            return 'n'
         while True:
             cont = input("Do you want to perform another calculation? (y/n): ")
             if cont.lower() in ['y', 'n']:
@@ -12,7 +34,9 @@ class Validator:
         return cont
     
     @staticmethod
-    def validate_workmode(mode_list):
+    def validate_workmode(mode_list, data):
+        if data:
+            return data['work_mode']
         print("\nWork modes: ")
         for key in mode_list:
             print(f"{key}) {mode_list[key]}")
@@ -20,25 +44,34 @@ class Validator:
         work_mode = input("select work mode: ")
         valid_modes = mode_list.keys()
         while work_mode not in valid_modes:
-            work_mode = input(f"Invalid work mode. Please select valid mode from the list: ")
+            work_mode = input("Invalid work mode. Please select valid mode from the list: ")
         return work_mode
     
+    @staticmethod
+    def validate_data_input(str_data):
+        data = str_data.split()
+        if len(data) == 1 :
+            res = float(data[0])
+        elif len(data) == 2 :
+            res = ufloat(float(data[0]), float(data[1]))
+        else:
+            print("Invalid input. Please enter a number or a number with uncertainty (e.g., '10' or '10 0.5').")
+            res = None
+        return res
+
     @staticmethod
     def validate_halflife_by_single_distance():
         data = {}
         while True:
-            plunger_distance_input = input("plunger distance in micrometers: ").split()
-            if len(plunger_distance_input) == 1 :
-                data['plunger_distance'] = float(plunger_distance_input[0])
-                break
-            elif len(plunger_distance_input) == 2 :
-                data['plunger_distance'] = ufloat(float(plunger_distance_input[0]), float(plunger_distance_input[1]))
+            plunger_distance_input = input("plunger distance in micrometers: ")
+            data['plunger_distance'] = Validator.validate_data_input(plunger_distance_input)
+            if data['plunger_distance'] is not None:
                 break
             else:
-                print("Invalid input. Please enter a number or a number with uncertainty (e.g., '10' or '10 0.5').")
                 continue
         while True:
             beta_input = input("beta(v/c): ").split()
+            #TODO: refactor
             if len(beta_input) == 1 :
                 data['beta'] = float(beta_input[0])
                 break
