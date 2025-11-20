@@ -4,9 +4,10 @@ from classes.validator import Validator
 #dictionary
 mode_list = {
     "1": "calculate half-life by one distance",
+    "2": "calculate half-life by multiple distances"
 }
 
-print("-------This is GNC V1.1 (Georgi's Nuclear Calculator)-------")
+print("\n-------This is GNC V1.2 (Georgi's Nuclear Calculator)-------\n")
 
 data = Validator.validate_hand_or_file()
 
@@ -16,17 +17,22 @@ else:
     hand_or_file_check = 'n'
 
 while True:
-  workmode = Validator.validate_workmode(mode_list, data)
+    workmode = Validator.validate_workmode(mode_list, data)
 
-  calculator = Calculator(data)
-  #TODO: manage workmode
-  calculator.get_halflife_by_single_distance(hand_or_file_check)
+    calculator = Calculator(data)
+    #TODO: manage workmode
+    if workmode == '1':
+        calculator.get_halflife_by_single_distance(hand_or_file_check)
+    
+    elif workmode == '2':
+        calculator.get_halflife_by_multiple_distances()
+    
 
-  cont = Validator.validate_yes_no(hand_or_file_check)
+    cont = Validator.validate_yes_no(hand_or_file_check)
 
-  if cont.lower() == 'n':
+    if cont.lower() == 'n':
       break
-  elif cont.lower() == 'y':
+    elif cont.lower() == 'y':
       continue
 
 

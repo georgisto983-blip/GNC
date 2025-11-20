@@ -12,15 +12,6 @@ class Validator:
                 file_data = json.load(f)
         return file_data 
  
-        # while True:
-        #     hand_or_file = input("Do you want input a commad file? (y/n): ")
-        #     if hand_or_file.lower() in ['y', 'n']:
-        #         break
-        #     else:
-        #         print("Invalid input. Please enter 'y' or 'n'.")
-        #         continue
-        # return hand_or_file    
-
     @staticmethod
     def validate_yes_no(hand_or_file):
         if hand_or_file == 'y':
